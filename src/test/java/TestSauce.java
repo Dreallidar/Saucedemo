@@ -4,11 +4,15 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
+import java.time.Duration;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class TestSauce {
     public String generateUsername() {
@@ -30,6 +34,20 @@ public class TestSauce {
     }
     WebDriver _globalDriver;
 
+    public WebElement snoozeUntilID(String elementId){
+        WebDriverWait wait = new WebDriverWait(_globalDriver, Duration.ofSeconds(10));
+
+    WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(By.id(elementId)));
+    return element;
+    }
+    public WebElement snoozeUntilXpath(String elementXP){
+        WebDriverWait wait = new WebDriverWait(_globalDriver, Duration.ofSeconds(10));
+
+    WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(elementXP)));
+    return element;
+    }
+
+
 
     @BeforeTest
     public void SetupWebDriver() {
@@ -48,12 +66,7 @@ public class TestSauce {
     public void loginCartCheckoutTest(){
         _globalDriver.findElement(By.id("user-name")).sendKeys("standard_user");
         _globalDriver.findElement(By.id("login-button")).click();
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        _globalDriver.findElement(By.id("add-to-cart-sauce-labs-backpack")).click();
+         snoozeUntilID("add-to-cart-sauce-labs-backpack").click();
         _globalDriver.findElement(By.id("add-to-cart-sauce-labs-bike-light")).click();
         _globalDriver.findElement(By.id("add-to-cart-sauce-labs-bolt-t-shirt")).click();
         _globalDriver.findElement(By.id("add-to-cart-sauce-labs-fleece-jacket")).click();
@@ -67,14 +80,57 @@ public class TestSauce {
         }
 
         _globalDriver.findElement(By.id("checkout")).click();
+        snoozeUntilID("first-name").sendKeys(generateUsername());
+        _globalDriver.findElement(By.id("last-name")).sendKeys(generateUsername());
+        _globalDriver.findElement(By.id("postal-code")).sendKeys(generateUsername());
+        _globalDriver.findElement(By.id("continue")).click();
         try {
-            Thread.sleep(2000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        _globalDriver.findElement(By.id("first-name")).sendKeys(generateUsername());
+            _globalDriver.findElement(By.id("finish")).click();
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        _globalDriver.findElement(By.id("back-to-products")).click();
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        _globalDriver.findElement(By.id("add-to-cart-sauce-labs-backpack")).click();
+        _globalDriver.findElement(By.id("add-to-cart-sauce-labs-bike-light")).click();
+        _globalDriver.findElement(By.id("remove-sauce-labs-backpack")).click();
+        _globalDriver.findElement(By.xpath("/html/body/div/div/div/div[1]/div[1]/div[3]/a/span")).click();
+        _globalDriver.findElement(By.id("checkout")).click();
+        _globalDriver.findElement(By.id("cancel")).click();
+        _globalDriver.findElement(By.id("continue-shopping")).click();
+       String kaina = _globalDriver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div/div/div[2]/div[2]/div[2]/div")).getText();
+        _globalDriver.findElement(By.xpath("/html/body/div/div/div/div[1]/div[1]/div[3]/a/span")).click();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        _globalDriver.findElement(By.id("checkout")).click();
+        snoozeUntilID("first-name").sendKeys(generateUsername());
         _globalDriver.findElement(By.id("last-name")).sendKeys(generateUsername());
         _globalDriver.findElement(By.id("postal-code")).sendKeys(generateUsername());
+        _globalDriver.findElement(By.id("continue")).click();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+       String kainaEnd = _globalDriver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div[2]/div[6]")).getText();
+       Assert.assertEquals(kainaEnd,"Item total: " + kaina);
+
+
+
 
 
 
