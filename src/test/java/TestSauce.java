@@ -12,7 +12,10 @@ import org.testng.annotations.Test;
 
 import java.time.Duration;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
+
+
+import static org.testng.Assert.assertTrue;
+import static org.testng.AssertJUnit.assertEquals;
 
 public class TestSauce {
     public String generateUsername() {
@@ -128,6 +131,34 @@ public class TestSauce {
         }
        String kainaEnd = _globalDriver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div[2]/div[6]")).getText();
        Assert.assertEquals(kainaEnd,"Item total: " + kaina);
+        _globalDriver.findElement(By.id("cancel")).click();
+        _globalDriver.findElement(By.id("remove-sauce-labs-bike-light")).click();
+        WebElement xLink = _globalDriver.findElement(By.xpath("/html/body/div/div/footer/ul/li[1]/a"));
+        Assert.assertEquals(xLink.getText(), "Twitter");
+        Assert.assertEquals(xLink.getAttribute("href"), "https://twitter.com/saucelabs");
+        _globalDriver.findElement(By.xpath("/html/body/div/div/div/div[1]/div[2]/div/span/select")).click();
+        _globalDriver.findElement(By.xpath("/html/body/div/div/div/div[1]/div[2]/div/span/select/option[3]")).click();
+
+        snoozeUntilXpath("/html/body/div/div/div/div[1]/div[1]/div[3]/a").click();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        _globalDriver.findElement(By.id("checkout")).click();
+        snoozeUntilID("first-name").sendKeys(generateUsername());
+        _globalDriver.findElement(By.id("last-name")).sendKeys(generateUsername());
+        _globalDriver.findElement(By.id("postal-code")).sendKeys(generateUsername());
+        _globalDriver.findElement(By.id("continue")).click();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        _globalDriver.findElement(By.id("finish")).click();
+        _globalDriver.quit();
+
 
 
 
