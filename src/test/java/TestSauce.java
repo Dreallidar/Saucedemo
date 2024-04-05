@@ -35,27 +35,28 @@ public class TestSauce {
         }
         return username.toString();
     }
+
     WebDriver _globalDriver;
 
-    public WebElement snoozeUntilID(String elementId){
+    public WebElement snoozeUntilID(String elementId) {
         WebDriverWait wait = new WebDriverWait(_globalDriver, Duration.ofSeconds(10));
 
-    WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(By.id(elementId)));
-    return element;
+        WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(By.id(elementId)));
+        return element;
     }
-    public WebElement snoozeUntilXpath(String elementXP){
+
+    public WebElement snoozeUntilXpath(String elementXP) {
         WebDriverWait wait = new WebDriverWait(_globalDriver, Duration.ofSeconds(10));
 
-    WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(elementXP)));
-    return element;
+        WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(elementXP)));
+        return element;
     }
-
 
 
     @BeforeTest
     public void SetupWebDriver() {
-    _globalDriver = new ChromeDriver();
-    _globalDriver.get("https://www.saucedemo.com");
+        _globalDriver = new ChromeDriver();
+        _globalDriver.get("https://www.saucedemo.com");
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -66,10 +67,10 @@ public class TestSauce {
     }
 
     @Test
-    public void loginCartCheckoutTest(){
+    public void loginCartCheckoutTest() {
         _globalDriver.findElement(By.id("user-name")).sendKeys("standard_user");
         _globalDriver.findElement(By.id("login-button")).click();
-         snoozeUntilID("add-to-cart-sauce-labs-backpack").click();
+        snoozeUntilID("add-to-cart-sauce-labs-backpack").click();
         _globalDriver.findElement(By.id("add-to-cart-sauce-labs-bike-light")).click();
         _globalDriver.findElement(By.id("add-to-cart-sauce-labs-bolt-t-shirt")).click();
         _globalDriver.findElement(By.id("add-to-cart-sauce-labs-fleece-jacket")).click();
@@ -92,7 +93,7 @@ public class TestSauce {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-            _globalDriver.findElement(By.id("finish")).click();
+        _globalDriver.findElement(By.id("finish")).click();
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
@@ -111,7 +112,7 @@ public class TestSauce {
         _globalDriver.findElement(By.id("checkout")).click();
         _globalDriver.findElement(By.id("cancel")).click();
         _globalDriver.findElement(By.id("continue-shopping")).click();
-       String kaina = _globalDriver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div/div/div[2]/div[2]/div[2]/div")).getText();
+        String kaina = _globalDriver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div/div/div[2]/div[2]/div[2]/div")).getText();
         _globalDriver.findElement(By.xpath("/html/body/div/div/div/div[1]/div[1]/div[3]/a/span")).click();
         try {
             Thread.sleep(1000);
@@ -129,8 +130,8 @@ public class TestSauce {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-       String kainaEnd = _globalDriver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div[2]/div[6]")).getText();
-       Assert.assertEquals(kainaEnd,"Item total: " + kaina);
+        String kainaEnd = _globalDriver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div[2]/div[6]")).getText();
+        Assert.assertEquals(kainaEnd, "Item total: " + kaina);
         _globalDriver.findElement(By.id("cancel")).click();
         _globalDriver.findElement(By.id("remove-sauce-labs-bike-light")).click();
         WebElement xLink = _globalDriver.findElement(By.xpath("/html/body/div/div/footer/ul/li[1]/a"));
@@ -160,15 +161,37 @@ public class TestSauce {
         _globalDriver.quit();
 
 
+    }
 
+    @Test
+    public void logincarttestProblem() {
+        _globalDriver.findElement(By.id("user-name")).sendKeys("problem_user");
+        _globalDriver.findElement(By.id("login-button")).click();
+        snoozeUntilID("add-to-cart-sauce-labs-backpack").click();
+        _globalDriver.findElement(By.id("add-to-cart-sauce-labs-bike-light")).click();
+        _globalDriver.findElement(By.id("add-to-cart-sauce-labs-bolt-t-shirt")).click();
+        _globalDriver.findElement(By.id("add-to-cart-sauce-labs-fleece-jacket")).click();
+        _globalDriver.findElement(By.id("add-to-cart-sauce-labs-onesie")).click();
+        _globalDriver.findElement(By.id("add-to-cart-test.allthethings()-t-shirt-(red)")).click();
+        _globalDriver.findElement(By.xpath("/html/body/div/div/div/div[1]/div[1]/div[3]/a/span")).click();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
-
-
-
-
-
-
-
+        _globalDriver.findElement(By.id("checkout")).click();
+        snoozeUntilID("first-name").sendKeys(generateUsername());
+        _globalDriver.findElement(By.id("last-name")).sendKeys(generateUsername());
+        _globalDriver.findElement(By.id("postal-code")).sendKeys(generateUsername());
+        _globalDriver.findElement(By.id("continue")).click();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        _globalDriver.findElement(By.id("finish")).click();
+        _globalDriver.quit();
     }
 
 }
