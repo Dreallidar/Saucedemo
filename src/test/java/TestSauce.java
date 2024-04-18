@@ -8,6 +8,7 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -35,6 +36,7 @@ public class TestSauce {
     }
 
     WebDriver _globalDriver;
+    WebDriverWait _wait;
 
     public WebElement snoozeUntilElement(By by) {
         WebDriverWait wait = new WebDriverWait(_globalDriver, Duration.ofSeconds(10));
@@ -44,10 +46,9 @@ public class TestSauce {
     }
 
     public WebElement snoozeUntilClickable(By by) {
-        WebElement element = snoozeUntilElement(by);
         WebDriverWait wait = new WebDriverWait(_globalDriver, Duration.ofSeconds(10));
 
-        element = wait.until(ExpectedConditions.elementToBeClickable(by));
+        WebElement element = wait.until(ExpectedConditions.elementToBeClickable(by));
         return element;
     }
 
@@ -208,13 +209,41 @@ public class TestSauce {
     public void loginAddAllToCart() {
         _globalDriver.findElement(By.id("user-name")).sendKeys("problem_user");
         _globalDriver.findElement(By.id("login-button")).click();
-        List<WebElement> items = _globalDriver.findElement(By.className("inventory_list")).findElements(By.className("inventory_item_name"));
-        for (WebElement item :items) {
-            System.out.println(item.getText());
-
+        List<WebElement> addToCarts = _globalDriver.findElement(By.className("inventory_list")).findElements(By.xpath("//*[text()='Add to cart']"));
+        for (WebElement addToCart : addToCarts) {//all items are put in cart
+            addToCart.click();
+        }
+        _globalDriver.findElement(By.id("shopping_cart_container")).click();//open cart
+        List<String> itemsCart = new ArrayList<>();
+        List<WebElement> elements = _globalDriver.findElement(By.className("cart_list")).findElements(By.className("inventory_item_name"));// all items that are in cart
+        for (WebElement element : elements) {
+            itemsCart.add(element.getText());
+        }
+        _globalDriver.findElement(By.id("react-burger-menu-btn")).click();//open burger
+        try {
+            Thread.sleep(360);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        _globalDriver.findElement(By.id("inventory_sidebar_link")).click();//open all items
+        List<String> itemNames = new ArrayList<>();
+        List<WebElement> inventorys = _globalDriver.findElement(By.className("inventory_list")).findElements(By.className("inventory_item_name"));
+        List<String> succesfullyInCart = new ArrayList<>();
+        for (WebElement inventory : inventorys) {
+            itemNames.add(inventory.getText());
+        }
+        for (String itemName : itemNames) {
+            for (String itemCart : itemsCart) {
+                if (itemCart.equals(itemName)) {
+                    succesfullyInCart.add(itemName);
+                }
+            }
+        }
+        itemNames.removeAll(succesfullyInCart);
+        for (String item : itemNames) {
+            System.out.println(item);
         }
     }
-
 
 
 }
