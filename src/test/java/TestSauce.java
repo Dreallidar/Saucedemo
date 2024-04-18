@@ -8,6 +8,7 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Random;
 
 
@@ -202,6 +203,18 @@ public class TestSauce {
         Assert.assertEquals(arYraFinish, false);
 
     }
+
+    @Test
+    public void loginAddAllToCart() {
+        _globalDriver.findElement(By.id("user-name")).sendKeys("problem_user");
+        _globalDriver.findElement(By.id("login-button")).click();
+        List<WebElement> items = _globalDriver.findElement(By.className("inventory_list")).findElements(By.className("inventory_item_name"));
+        for (WebElement item :items) {
+            System.out.println(item.getText());
+
+        }
+    }
+
 
 
 }
